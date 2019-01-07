@@ -1,0 +1,92 @@
+Our system uses
+image processing and segmentation to identify food portions
+(i.e., isolating portions such as chicken, rice, vegetables, and so
+on, from the overall food image), measures the volume of each
+food portion, and calculates nutritional facts of each portion by
+calculating the mass of each portion from its measured volume
+and matching it against existing nutritional fact tables
+
+
+page 3 BRIEF WORKING
+
+Calorie is a typical measuring unit, which is defined as the
+amount of heat energy needed to raise the temperature of one
+gram of water by 1° [19]. This unit is commonly used to
+measure the overall amount of energy in any food portion that
+consists of the main food components of carbohydrate, protein,
+and fat. In addition to gram units, calorie units are also adopted
+in developing nutritional facts tables. Each person should take
+a certain amount of calories daily. If this amount is increased,
+it will lead to gain weight.
+
+calorie table from pdf and block diagram.
+
+images
+are taken by the user with a mobile device followed by
+a preprocessing step. Then, at the segmentation step, each
+image will be analyzed to extract various segments of the
+food portion.
+
+For each detected
+food portion, a feature extraction process has to be performed.
+In this step, various food features including size, shape, color,
+and texture will be extracted. The extracted features will be
+sent to the classification step where, using the support vector
+machine (SVM) scheme, the food portion will be identified.
+Finally, by estimating the area of the food portion and using
+some nutritional tables, the calorie value of the food will be
+extracted.
+
+page 4 TECHNICAL DETAILS
+
+We used a Gabor filter-bank
+
+gabor filter:
+In image processing, a Gabor filter, named after Dennis Gabor, is a linear filter used for texture analysis,
+which means that it basically analyzes whether there are any specific frequency content in the image in
+specific directions in a localized region around the point or region of analysis
+
+It is highly
+suitable for our purpose where the texture features are obtained
+by subjecting each image to a Gabor filtering operation in a
+window around each pixel.
+we used Gabor filter for texture segmentation.
+
+In the implementation phase, each image is divided into 4 × 4
+blocks, and each block is convolved with Gabor filter. Six
+orientations and five scales Gabor filters are used, and the
+mean and variance of the Gabor sizes are calculated for each
+block. In our project, using Gabor filter, we can identify five
+different textures and their identities as soft, rough, smooth,
+porous, and wavy, as shown in Table II. In this table, for each
+texture, the number of used image samples for training phase
+is reported as well.
+As the figure below shows, we have used these features as
+our classification inputs and the results will be the input of the
+SVM phase. For each feature, several categories are engaged,
+
+Once the food items are segmented and their features are
+extracted, the next step is to identify the food items using
+statistical pattern recognition techniques. Afterward, the food
+item has to be classified, using SVM mechanism
+
+SVM :
+        SVM is one of the popular techniques used for data
+classification. A classification task usually involves training
+and testing data, which consist of some data instances. Each
+instance in the training set contains one class label and several
+features. The goal of SVM is to produce a model, which
+predicts target value of data instances in the testing set, which
+are given only by their attributes.
+
+
+For increasing the accuracy For increasing the accuracy.
+
+The system then measures the volume of each food portion
+and converts it to mass, using available density tables, and
+finally uses the mass and nutritional tables to measure the
+overall calorie and nutrients in the food
+
+
+
+install-docs --install-changed
