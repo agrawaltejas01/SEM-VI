@@ -1,9 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/*
+
+validations done : 1. Code should begin with start
+                             2. Code should end with END
+                             3. Invalid Mnemonics
+                             4. Invalid number of operands
+                             5. Address of symbol not resolved
+
+*/
+
+
 int loc = 0;            // location counter
 char type_of_instruction[20];
-int opcode, length;         // length = length of instruction
+int opcode, length,no_of_operands_needed;         // length = length of instruction
 int LTP = 1;                    //  LTP = index of literal table
 int PTP = 1;                    // PTP = pooltable pointer handles pool
 int pooltab[10] ;
@@ -37,7 +48,7 @@ void init()
     pooltab[1] = 1;
 }
 
-void search_mot(char query[])
+int search_mot(char query[])
 {
     FILE *mot;
     mot = fopen("MOT", "r");
@@ -46,25 +57,36 @@ void search_mot(char query[])
     {
         char buffer[200];
         char mnemonic[20];
-        fscanf(mot,"%s %d %s %d", mnemonic, &opcode, type_of_instruction, &length);
+        fscanf(mot,"%s %d %s %d %d", mnemonic, &opcode, type_of_instruction, &length, &no_of_operands_needed);
 
         //cout<<type_of_instruction<<"\n";
 
         if(!strcmp(query, mnemonic))
-            return ;
+            return 1;
     }
+
+    return 0;
 }
 
-int check_SYMTAB(char label[], char op2[])
-{
+int check_SYMTAB(char label[], char mnemonic[], char op2[])     // mnemonic is needed for symbol
+{                                                                                                   // address resolving
 
     int i=0, found = 1, return_value;
+
     for(i=0;i<100;i++)
     {
         if( !strcmp(symtab[i].label_symbol, label))
         {
             found = 1;
-            symtab[i].address = loc;
+
+            if(symtab[i].address == -1 && (!strcmp(mnemonic, "ds") || !strcmp(mnemonic, "dc")) ) //// label
+                                //will be repeated in case of ds or dc only. When it will be symbol whose address is
+                                //to be resolved and hence it has come as label
+                symtab[i].address = loc;
+
+            else if(symtab[i].address != -1)    // if address is not -1 then it was never symbol
+                symtab[i].address = loc;
+
             strcpy(symtab[i].size, op2);
 
             break;
@@ -81,10 +103,21 @@ int check_SYMTAB(char label[], char op2[])
     {
         symtab[i].sr_no = i+1;
         strcpy(symtab[i].label_symbol,label);
-        symtab[i].address = loc;
+
+        if( !strcmp(label, op2))            // means symbol is encounterd in imperative statement for 1st time
+            symtab[i].address = -1;
+
+        else
+            symtab[i].address = loc;
     }
 
-    return symtab[i].address;       // return adress of entry in case of symbol
+    if(symtab[i].address != -1)
+        return symtab[i].address ;       // return adress of entry in case of label or symbol whos address is
+                                                        //resolved
+
+    else
+        return i+1;  // if symbol's address is not resolved return index
+                            // indexing starts from 1 hence i+1
 }
 
 int add_in_LITTAB(char literal)
@@ -196,16 +229,28 @@ int main()
     source = fopen("source_code", "r");
     destin = fopen("intermediate_code", "w");
 
+    char mnemonic[20],label[20],op1[20],op2[20];
+
     init();
 
     int label_return;
+    int end = 0;
+    int no_of_operands_present = 0;
+
+    fscanf(source, "%s %s %s %s", label, mnemonic, op1, op2);
+
+    if(strcmp(mnemonic,"START"))
+    {
+        cout<<"Code should start with START !!!\n";
+        return 0;
+    }
 
     while(!feof(source))
     {
+        no_of_operands_present = 0;
+
         char buffer[200];
         fgets(buffer,300,source);
-
-        char mnemonic[20],label[20],op1[20],op2[20];
 
         sscanf(buffer, "%s %s %s %s", label, mnemonic, op1, op2);   // for now give -
 
@@ -218,14 +263,39 @@ int main()
         for(int i=0; i<strlen(op2); i++)
             op2[i] = tolower(op2[i]);
 
-        search_mot(mnemonic);
+        if( strcmp(op1,"-"))
+            no_of_operands_present++;
+
+        if( strcmp(op2,"-"))
+            no_of_operands_present++;
+
+        int mnemonic_check = search_mot(mnemonic);
+
+        if(mnemonic_check == 0)         // invalid mnemonic check
+        {
+            end = 0;
+            cout<<"Invalid mnemonic was found !!!!"<<endl;
+            cout<<mnemonic<<endl;
+            return 0;
+        }
+
+        if(no_of_operands_present != no_of_operands_needed)
+        {
+            end = 0;
+            cout<<"Invalid number of operands \n";
+            cout<<mnemonic<<" "<<no_of_operands_present<<" "<<no_of_operands_needed<<endl;
+            return 0;
+        }
 
         if( !strcmp(mnemonic, "end"))       // if end break
-       		break;
+        {
+            end = 1;
+    break;
+        }
 
         if( strcmp(label, "-"))
         {
-            label_return=check_SYMTAB(label,op2);
+            label_return=check_SYMTAB(label,mnemonic,op2);
         }
 
       if(!strcmp(mnemonic, "ds"))
@@ -250,7 +320,7 @@ int main()
 
         else if( !strcmp(mnemonic, "start"))
         {
-        	sscanf(op2, "%d", &loc);
+            sscanf(op2, "%d", &loc);
             fprintf(destin,"0 (%s,%d)(C,%s)\n",type_of_instruction, opcode, op2);
         }
 
@@ -300,7 +370,7 @@ int main()
             else
             {
                 S_or_L = 'S';
-                address = check_SYMTAB(op2,op2);
+                address = check_SYMTAB(op2,mnemonic,op2);
             }
 
             fprintf(destin,"%d (%s,%d)(R,%d)(%c,%d)\n",loc,type_of_instruction, opcode, reg_value,S_or_L,address);
@@ -311,12 +381,40 @@ int main()
 
     }
 
-    // END has been encouterd
-    PTP ++;
-    pooltab[PTP] = LTP;
-    fprintf(destin,"%d (AD,01)\n",loc);
+    if(end)             // END has been encouterd
+    {
+        PTP ++;
+        pooltab[PTP] = LTP;
+        fprintf(destin,"%d (AD,01)\n",loc);
 
-    print_in_file();        // symbol table and litteral table is written in files
+        print_in_file();        // symbol table and litteral table is written in files
+
+         for(int i=0;i<20;i++)           // checking address resolution
+        {
+            if(symtab[i].sr_no == -1)
+                break;
+
+            else if(symtab[i].address == -1)
+            {
+                cout<<"Address of "<<symtab[i].label_symbol<<" was not resolved !!!!"<<endl;
+                return 0;
+            }
+        }
+    }
+
+    else            // END was not encounterd
+    {
+       /* fclose(destin);                                                   // if output is not to be given
+        destin = fopen("intermediate_code", "w");
+
+        fprintf(destin, "Error was encounterd !!!\n" );*/
+
+        cout<<"Error : End was not encounterd !!!"<<endl;
+        return 0;
+
+
+
+    }
 
     fclose(source);
     fclose(destin);

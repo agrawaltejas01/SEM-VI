@@ -1,18 +1,18 @@
-stop 00 IS 1
-add 01 IS 1
-sub 02 IS 1
-mult 03 IS 1
-mover 04 IS 1
-movem 05 IS 1
-comp 06 IS 1
-bc 07 IS 1
-div 08 IS 1
-read 09 IS 1
-print 10 IS 1
-dc 01 DL 1
-ds 02 DL 0
-start 01 AD 0
-end 02 AD 0
-ltong 03 AD 0
-origin 04 AD 0
-equ 05 AD 0
+stop 00 IS 1 0
+add 01 IS 1 2
+sub 02 IS 1 2
+mult 03 IS 1 2
+mover 04 IS 1 2
+movem 05 IS 1 2
+comp 06 IS 1 2
+bc 07 IS 1 2
+div 08 IS 1 2
+read 09 IS 1 2
+print 10 IS 1 2
+dc 01 DL 1 1
+ds 02 DL 0 1
+start 01 AD 0 1
+end 02 AD 0 0
+ltorg 03 AD 0 0
+origin 04 AD 0 1
+equ 05 AD 0 1
