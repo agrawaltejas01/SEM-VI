@@ -130,7 +130,7 @@ int main()
     int n=6;
     int arr[6] = {6,5,4,3,2,1};
 
-    int tapes = 0,files = 0, total_tape = 0;
+    int tapes = 0,files = 0, total_tape = 0, total_file = 0;
 
     /*cout<<"Enter number of tapes : ";
     cin>>tapes;
@@ -140,7 +140,7 @@ int main()
     cin>>files;
     cout<<endl;
 
-    int tape_len[tapes], files_len[files];
+    int tape_len[tapes], files_len[files], tape[tapes][files];
 
     for (int i = 0; i < tapes; i++)
     {
@@ -148,7 +148,7 @@ int main()
         cin>>tape_len[i];
         cout<<endl;
 
-        total_tape += tape_len;
+        total_tape += tape_len[i];
     }
 
     for (int i = 0; i < files; i++)
@@ -156,17 +156,24 @@ int main()
         cout<<"Enter file size of file "<<i+1<<" : ";
         cin>>files_len[i];
         cout<<endl;
+
+        total_file += files_len[i];
+    }
+
+    if(total_file > total_tape)
+    {
+        cout<<"Not sufficient tape !!!";
+        return 0;
     }
 
     if( !check_if_sorted(files,files_len))
         merge_sort(files_len,0,files-1);
 
 
-
-    for(int i=0;i<files;i++)
-        cout<<files_len[i]<<" ";
-    cout<<"\n";
-
+    for(int i=0; i<files; i++)
+    {
+        tape[curr_tape][]
+    }
 
 
 }
