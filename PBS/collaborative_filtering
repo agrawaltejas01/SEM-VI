@@ -1,0 +1,23 @@
+Collaborative filtering is based on making predictions about a user’s
+preferences or tastes based on the preferences of a group of users
+that are considered similar to this user.
+Main challenge in this task is determining which users are similar to given one.
+In order to tackle this task, there are
+fundamentally 3 approaches: memory-based methods, modelbased methods and hybrid approaches
+
+Regardless of the method used in the CF stage, the technical
+objective generally pursued is to minimize the prediction errors,
+by making the accuracy of the RS as high as possible.
+
+To do this we make cluster based on importance of user x for given user y.
+
+Importance depends on different factors such as advanced and novoice user,
+teacher and student, advanced student and beginner.
+
+To deal with this, we start from usual two-dimensional matrix of ratios R of U users for I
+items and we add to it another two-dimensional matrix C for scores of U users and T level
+tests or exams.
+
+In order to evaluate the importance of knowledge of user x(Cx) for a given user y
+with knowledge(Cy), we define weight relationship by
+f = Cx - Cy
