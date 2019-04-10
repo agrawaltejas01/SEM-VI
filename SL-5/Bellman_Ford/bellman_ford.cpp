@@ -46,14 +46,14 @@ void bellman_ford()
 			break;
 
 		for(int i=1;i<n+1;i++)
-			cout<<dist[i]<<" ";		
+			cout<<dist[i]<<" ";
 		cout<<"\n";
 
 		for(int i=1;i<n+1;i++)
-			cout<<parent[i]<<" ";		
+			cout<<parent[i]<<" ";
 		cout<<"\n\n";
 
-		
+
 	}
 
 	for(int i=0;i<n;i++)
@@ -85,7 +85,7 @@ void path(int dest)
 		curr_parent = parent[curr_parent];
 		route.pb(curr_parent);
 	}
-	
+
 	for(int i=route.size()-1;i>=0;i--)
 		cout<<route[i]<<" ";
 	cout<<"\n";
@@ -93,7 +93,7 @@ void path(int dest)
 
 int main()
 {
-	
+
 	cout<<"Enter no. of nodes : ";
 	cin>>n;
 	cout<<"\n";
@@ -129,8 +129,8 @@ int main()
 	}
 	cout<<"\n";
 
-	
 
-	bellman_ford(); 
+
+	bellman_ford();
 	path(5);
 }
