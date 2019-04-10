@@ -17,6 +17,8 @@ typedef long long int lli;
 using namespace std;
 
 int ust_sr_no = 0, symtab_sr_no = 0, littab_sr_no = 0;
+int multiline_comment_active = 0;
+int double_quotes_activate = 0;
 
 map<string, int>symtab, littab;
 
@@ -100,6 +102,7 @@ void process(string line)
 {
   int len = line.length();
   int terminal_index, symbol_index, litteral_index;
+  string str="";      // used for "" handling
 
   vector<string> lexeme_array;
   lexeme_array = extract_lexeme(line);
@@ -114,6 +117,67 @@ void process(string line)
   {
     if(curr == "//")
       return;
+
+    else if(curr == "*/")
+    {
+      multiline_comment_active = 0;
+      continue;
+    }
+
+    if(multiline_comment_active)
+      continue;
+
+    else if(curr == "/*")
+    {
+      multiline_comment_active = 1;
+      continue;
+    }
+
+    /*if(curr == " \" " && !double_quotes_activate)  // starting "
+    {
+      UST u;      // pushing " in ust
+      u.sr_no = ust_sr_no++;
+      u.sym = curr;
+      u.type = "TRM";
+      u.index_no = 17;
+      ust.pb(u);
+
+
+      double_quotes_activate = 1;
+      continue;
+    }
+
+    if(curr != " \" " && double_quotes_activate)  // in between string
+    {
+      str += curr;
+      str += "\0";    // needs to be addes manually
+      continue;
+    }
+
+    if(curr == " \" " && double_quotes_activate)   // ending "
+    {
+      double_quotes_activate = 0;       // now add str in litt and reinitialize it with null
+
+      littab[str] = littab_sr_no;
+
+      UST u;      // pushing " in ust
+      u.sr_no = ust_sr_no++;
+      u.sym = str;
+      u.type = "LIT";
+      u.index_no = littab_sr_no++;
+      ust.pb(u);
+
+      str = "";
+
+      UST v;      // pushing " in ust
+      v.sr_no = ust_sr_no++;
+      v.sym = curr;
+      v.type = "TRM";
+      v.index_no = 17;
+
+      ust.pb(v);
+      continue;
+    }*/
 
     terminal_index = is_terminal(curr);
 
@@ -185,7 +249,6 @@ int main()
 
 	FILE *source, *destin;
   source = fopen("source_code", "r");
-  destin = fopen("destin_code", "w");
 
   char buffer[50];
   fgets(buffer, 50, source);
