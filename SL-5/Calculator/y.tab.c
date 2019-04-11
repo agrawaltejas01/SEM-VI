@@ -217,8 +217,7 @@ int yywrap()
 {
 return 1;
 }
-
-#line 222 "y.tab.c"
+#line 221 "y.tab.c"
 
 #if YYDEBUG
 #include <stdio.h>		/* needed for printf */
@@ -452,7 +451,7 @@ case 8:
 #line 19 "calc.y"
 	{ yyval = yystack.l_mark[0]; }
 break;
-#line 456 "y.tab.c"
+#line 455 "y.tab.c"
     }
     yystack.s_mark -= yym;
     yystate = *yystack.s_mark;

@@ -1,5 +1,2 @@
-int main ( )
-{
-/* int i */ = 0 ;
-int hello ;
-}
+printf ( " This should come as one " ) ;
+" This one too "

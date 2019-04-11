@@ -1,0 +1,4 @@
+byacc -d calc.y
+flex calc.l
+gcc y.tab.c lex.yy.c -w
+./a.out

@@ -133,8 +133,9 @@ void process(string line)
       continue;
     }
 
-    /*if(curr == " \" " && !double_quotes_activate)  // starting "
+    if(curr == "\"" && !double_quotes_activate)  // starting "
     {
+			//cout<<"Quotes started \n\n\n";
       UST u;      // pushing " in ust
       u.sr_no = ust_sr_no++;
       u.sym = curr;
@@ -147,14 +148,14 @@ void process(string line)
       continue;
     }
 
-    if(curr != " \" " && double_quotes_activate)  // in between string
+    if(curr != "\"" && double_quotes_activate)  // in between string
     {
       str += curr;
-      str += "\0";    // needs to be addes manually
+      str += " ";    // needs to be added manually
       continue;
     }
 
-    if(curr == " \" " && double_quotes_activate)   // ending "
+    if(curr == "\"" && double_quotes_activate)   // ending "
     {
       double_quotes_activate = 0;       // now add str in litt and reinitialize it with null
 
@@ -177,7 +178,7 @@ void process(string line)
 
       ust.pb(v);
       continue;
-    }*/
+    }
 
     terminal_index = is_terminal(curr);
 
@@ -249,6 +250,7 @@ int main()
 
 	FILE *source, *destin;
   source = fopen("source_code", "r");
+  destin = fopen("destin_code", "w");
 
   char buffer[50];
   fgets(buffer, 50, source);
