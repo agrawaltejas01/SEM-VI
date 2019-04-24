@@ -1,0 +1,38 @@
+package music;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.conf.*;
+import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.util.*;
+
+public class Music_2 extends Configured implements Tool
+{
+	public int run(String[] args) throws Exception
+	{
+		JobConf conf = new JobConf(getConf(), Music_2.class);
+		conf.setJobName("Music_2");
+		conf.setOutputKeyClass(Text.class);
+        conf.setOutputValueClass(Text.class);
+        
+		conf.setMapperClass(Music_2Mapper.class);
+		conf.setReducerClass(Music_2Reducer.class);
+		
+		Path in = new Path(args[0]);
+		Path out = new Path(args[1]);
+		
+		FileInputFormat.addInputPath(conf, in);
+		FileOutputFormat.setOutputPath(conf, out);
+		
+		JobClient.runJob(conf);
+		return 0;
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		
+		int res = ToolRunner.run(new Configuration(), new Music_2(), args);
+		System.exit(res);
+	}
+}
+
